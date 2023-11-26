@@ -1,0 +1,22 @@
+<app-back-to-main></app-back-to-main>
+<app-material-form-fields
+  [formData]="this.formControls"
+  (formSubmitted)="this.showData($event)"
+  (callbackFunction)="this.receiveCallback($event)"
+  [containerCssClass]="this.containerCssClass"
+  class="demo-form-class">
+</app-material-form-fields>
+@if (this.output !== '') {
+  <div class="callback-messages float-left clear-fix">
+    <div style="width: 100%; position: relative; float: left; font-weight: bold;" [innerHTML]="this.output"></div>
+  </div>
+}
+@if (this.errors.length > 0) {
+  <div class="messages-and-output float-left clear-fix">
+    @for (error of this.errors; track error) {
+      <div style="width: 100%; position: relative; float: left">
+        {{ error }}
+      </div>
+    }
+  </div>
+}

@@ -1,0 +1,29 @@
+.demo-form-class {
+    width: 50%;
+    position: relative;
+    float: left;
+    background: linear-gradient(to right, #b3b3b3, #bfbfbf, #ccc, lightgrey, #d9d9d9, #e6e6e6, #f2f2f2 );
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: 5px;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
+:host ::ng-deep {
+    .mat-mdc-text-field-wrapper {
+        width: 350px!important;
+        position: relative;
+        float:left;
+        clear: both;
+    }
+
+    .demo-container-class {
+        width: 100%;
+        padding-top: 25px;
+    }
+
+    .demo-container-class form {
+        width: 100%;
+    }
+}

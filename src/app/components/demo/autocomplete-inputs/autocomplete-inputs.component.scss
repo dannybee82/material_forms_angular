@@ -1,0 +1,17 @@
+:host ::ng-deep {
+    .mat-mdc-text-field-wrapper {
+        width: 350px!important;
+        position: relative;
+        float:left;
+        clear: both;
+    }
+
+    .demo-container-class {
+        width: 100%;
+        padding-top: 25px;
+    }
+
+    .demo-container-class form {
+        width: 100%;
+    }
+}

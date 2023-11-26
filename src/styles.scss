@@ -1,0 +1,161 @@
+html, body { height: 100%; }
+body { margin: 0; font-family: "Roboto", "Helvetica Neue", sans-serif; }
+.w-100 {
+    width: 100%;
+}
+.p-15 {
+    padding: 15px;
+}
+
+
+//General styles.
+.predefined-flex {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding-top: 20px;
+}
+
+.formfield-width {
+    width: 450px;
+}
+
+.float-left {
+    position: relative;
+    float: left;
+}
+
+.float-right {
+    position: relative;
+    float: right;
+}
+
+.clear-left {
+    clear: left;
+}
+
+.clear-right {
+    clear: right;
+}
+
+.clear-fix {
+    clear: both;
+}
+
+.margin-left-10 {
+    margin-left: 10px;
+}
+
+.margin-bottom-15 {
+    margin-bottom: 15px;
+}
+
+.rounded-borders {
+    border-radius: 5px;
+}
+
+//Below: Form input elements
+.firstname-class {
+    background-color: #00cc00;
+}
+
+.lastname-class {
+    background-color: #1aff1a;
+}
+
+.favorite-fruit-class {
+    background-color: #cc00cc;
+}
+
+.favorite-car-class {
+    background-color: #ff1aff; 
+}
+
+.pay-for-second-hand-book-class {
+    background-color: #3333ff;
+}
+
+.enter-value-between-class {
+    background-color: #4d4dff;
+}
+
+.random-positive-number-class {
+    background-color: #b1dae7;
+}
+
+.random-negative-number-class {
+    background-color: #b1dae7;
+}
+
+.birth-date-class {
+    background-color: #b37400;
+    margin-bottom: 15px;
+}
+
+.birth-date-callback-class {
+    background-color: #ffc14d;
+    margin-bottom: 15px;
+}
+
+.birth-date-callback-class-002 {
+    background-color: limegreen;
+    margin-bottom: 15px;
+}
+
+.select-girl-name-class {
+    background: linear-gradient(to left, darkgreen, green, lightgreen);
+    margin-bottom: 15px;
+    border: 1px solid #000;
+}
+
+.select-color-class {
+    background: linear-gradient(to right, yellow, #ffff4d, #ffffe0);
+    margin-bottom: 15px;
+    border: 1px solid #000;
+}
+
+.select-girl-name-multi-class {
+    background-color: #e6e6e6;
+    border: 1px dashed #000;
+}
+
+.select-color-multi-class {
+    background-color: lightgrey;
+    border: 1px solid #000;
+}
+
+.textarea-about {
+    background: linear-gradient(to right, #f5f5f5, #fffff0, #fff);
+}
+
+.textarea-about-callback {
+    background: linear-gradient(to left, #f5f5f5, #fffff0, #fff);
+}
+
+.form-button {
+    margin-left: 10px;
+    margin-top: 15px;
+    position: relative;
+    float: left;
+    clear: both;
+}
+
+.callback-messages {
+    margin-top: 25px;
+    width: 30%;
+    background-color: lightgrey;
+    color: #000;
+    padding: 5px;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+
+.messages-and-output {
+    margin-top: 25px;
+    width: 25%;
+    background-color: darkred;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    margin-left: 10px;
+}

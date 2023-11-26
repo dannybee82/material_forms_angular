@@ -1,0 +1,236 @@
+
+@if (this.formData.length > 0) {
+  <div [class]="this.containerCssClass">
+    <form [formGroup]="this.setFormControls.formControlGroup" (ngSubmit)="this.callbackSubmit()" (keydown.enter)="$event.preventDefault()">
+      @for (formControlType of this.setFormControls.formControlTypes; track formControlType; let index = $index) {
+        @if (formControlType == FORM_CONTROL_TYPES.INPUT_TEXT) {
+          <div [class]="this.setFormControls.formControlCssClasses[index]">
+            <mat-form-field>
+              <mat-label>{{ this.setFormControls.formControlLabels[index] }}</mat-label>
+              <input matInput type="text"
+                class="{{this.setFormControls.formControlCssClasses[index] != undefined ? this.setFormControls.formControlCssClasses[index] : ''}}"
+                formControlName="{{ this.setFormControls.formControlNames[index] }}"
+                (input)="this.changeListener($event)"
+                autocomplete="off">
+              </mat-form-field>
+            </div>
+          }
+          @if (formControlType == FORM_CONTROL_TYPES.INPUT_TEXT_CALLBACK) {
+            <div [class]="this.setFormControls.formControlCssClasses[index]">
+              <mat-form-field>
+                <mat-label>{{ this.setFormControls.formControlLabels[index] }}</mat-label>
+                <input matInput type="text"
+                  class="{{this.setFormControls.formControlCssClasses[index] != undefined ? this.setFormControls.formControlCssClasses[index] : ''}}"
+                  formControlName="{{ this.setFormControls.formControlNames[index] }}"
+                  (keyup)="this.inputCallback(index, this.setFormControls.formControlNames[index], $any($event).target.value)"
+                  autocomplete="off">
+                </mat-form-field>
+              </div>
+            }
+            @if (formControlType == FORM_CONTROL_TYPES.INPUT_TEXT_AUTOCOMPLETE) {
+              <div [class]="this.setFormControls.formControlCssClasses[index]">
+                <mat-form-field>
+                  <mat-label>{{ this.setFormControls.formControlLabels[index] }}</mat-label>
+                  <input matInput type="text"
+                    class="{{this.setFormControls.formControlCssClasses[index] != undefined ? this.setFormControls.formControlCssClasses[index] : ''}}"
+                    formControlName="{{ this.setFormControls.formControlNames[index] }}"
+                    (input)="this.changeListener($event)"
+                    (keyup)="this.changeListener($event)"
+                    [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="this.changeListener($event)">
+                      @for (option of this.setFormControls.getObservable(this.setFormControls.formControlNames[index]) | async; track option) {
+                        <mat-option [value]="option">
+                          {{ option }}
+                        </mat-option>
+                      }
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </div>
+              }
+              @if (formControlType == FORM_CONTROL_TYPES.INPUT_TEXT_AUTOCOMPLETE_CALLBACK) {
+                <div [class]="this.setFormControls.formControlCssClasses[index]">
+                  <mat-form-field>
+                    <mat-label>{{ this.setFormControls.formControlLabels[index] }}</mat-label>
+                    <input matInput type="text"
+                      class="{{this.setFormControls.formControlCssClasses[index] != undefined ? this.setFormControls.formControlCssClasses[index] : ''}}"
+                      formControlName="{{ this.setFormControls.formControlNames[index] }}"
+                      (keyup)="this.inputCallback(index, this.setFormControls.formControlNames[index], $any($event).target.value)"
+                      (change)="this.inputCallback(index, this.setFormControls.formControlNames[index], $any($event).target.value)"
+                      [matAutocomplete]="auto">
+                      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="this.changeListener($event)">
+                        @for (option of this.setFormControls.getObservable(this.setFormControls.formControlNames[index]) | async; track option) {
+                          <mat-option [value]="option">
+                            {{ option }}
+                          </mat-option>
+                        }
+                      </mat-autocomplete>
+                    </mat-form-field>
+                  </div>
+                }
+                @if (formControlType == FORM_CONTROL_TYPES.INPUT_NUMBER_INT) {
+                  <div [class]="this.setFormControls.formControlCssClasses[index]">
+                    <mat-form-field>
+                      <mat-label>{{ this.setFormControls.formControlLabels[index] }}</mat-label>
+                      <input matInput type="number"
+                        class="{{this.setFormControls.formControlCssClasses[index] != undefined ? this.setFormControls.formControlCssClasses[index] : ''}}"
+                        formControlName="{{ this.setFormControls.formControlNames[index] }}"
+                        (input)="this.changeListener($event)"
+                        autocomplete="off"
+                        [attr.step]="this.hasAttribute(this.setFormControls.formControlNames[index], 'step') ? this.getAttribute(this.setFormControls.formControlNames[index], 'step', '1') : null"
+                        [attr.min]="this.hasAttribute(this.setFormControls.formControlNames[index], 'min') ? this.getAttribute(this.setFormControls.formControlNames[index], 'min', null) : null"
+                        [attr.max]="this.hasAttribute(this.setFormControls.formControlNames[index], 'max') ? this.getAttribute(this.setFormControls.formControlNames[index], 'max', null) : null">
+                      </mat-form-field>
+                    </div>
+                  }
+                  @if (formControlType == FORM_CONTROL_TYPES.INPUT_NUMBER_INT_CALLBACK) {
+                    <div [class]="this.setFormControls.formControlCssClasses[index]">
+                      <mat-form-field>
+                        <mat-label>{{ this.setFormControls.formControlLabels[index] }}</mat-label>
+                        <input matInput type="number"
+                          class="{{this.setFormControls.formControlCssClasses[index] != undefined ? this.setFormControls.formControlCssClasses[index] : ''}}"
+                          formControlName="{{ this.setFormControls.formControlNames[index] }}"
+                          (keyup)="this.inputCallback(index, this.setFormControls.formControlNames[index], $any($event).target.value)"
+                          autocomplete="off"
+                          [attr.step]="this.hasAttribute(this.setFormControls.formControlNames[index], 'step') ? this.getAttribute(this.setFormControls.formControlNames[index], 'step', '1') : null"
+                          [attr.min]="this.hasAttribute(this.setFormControls.formControlNames[index], 'min') ? this.getAttribute(this.setFormControls.formControlNames[index], 'min', null) : null"
+                          [attr.max]="this.hasAttribute(this.setFormControls.formControlNames[index], 'max') ? this.getAttribute(this.setFormControls.formControlNames[index], 'max', null) : null">
+                        </mat-form-field>
+                      </div>
+                    }
+                    @if (formControlType == FORM_CONTROL_TYPES.INPUT_NUMBER_FLOAT) {
+                      <div [class]="this.setFormControls.formControlCssClasses[index]">
+                        <mat-form-field>
+                          <mat-label>{{ this.setFormControls.formControlLabels[index] }}</mat-label>
+                          <input matInput type="number"
+                            class="{{this.setFormControls.formControlCssClasses[index] != undefined ? this.setFormControls.formControlCssClasses[index] : ''}}"
+                            formControlName="{{ this.setFormControls.formControlNames[index] }}"
+                            (input)="this.changeListener($event)"
+                            autocomplete="off"
+                            [attr.step]="this.hasAttribute(this.setFormControls.formControlNames[index], 'step') ? this.getAttribute(this.setFormControls.formControlNames[index], 'step', '.01') : null"
+                            [attr.min]="this.hasAttribute(this.setFormControls.formControlNames[index], 'min') ? this.getAttribute(this.setFormControls.formControlNames[index], 'min', null) : null"
+                            [attr.max]="this.hasAttribute(this.setFormControls.formControlNames[index], 'max') ? this.getAttribute(this.setFormControls.formControlNames[index], 'max', null) : null">
+                          </mat-form-field>
+                        </div>
+                      }
+                      @if (formControlType == FORM_CONTROL_TYPES.INPUT_NUMBER_FLOAT_CALLBACK) {
+                        <div [class]="this.setFormControls.formControlCssClasses[index]">
+                          <mat-form-field>
+                            <mat-label>{{ this.setFormControls.formControlLabels[index] }}</mat-label>
+                            <input matInput type="number"
+                              class="{{this.setFormControls.formControlCssClasses[index] != undefined ? this.setFormControls.formControlCssClasses[index] : ''}}"
+                              formControlName="{{ this.setFormControls.formControlNames[index] }}"
+                              (keyup)="this.inputCallback(index, this.setFormControls.formControlNames[index], $any($event).target.value)"
+                              autocomplete="off"
+                              [attr.step]="this.hasAttribute(this.setFormControls.formControlNames[index], 'step') ? this.getAttribute(this.setFormControls.formControlNames[index], 'step', '.01') : null"
+                              [attr.min]="this.hasAttribute(this.setFormControls.formControlNames[index], 'min') ? this.getAttribute(this.setFormControls.formControlNames[index], 'min', null) : null"
+                              [attr.max]="this.hasAttribute(this.setFormControls.formControlNames[index], 'max') ? this.getAttribute(this.setFormControls.formControlNames[index], 'max', null) : null">
+                            </mat-form-field>
+                          </div>
+                        }
+                        @if (formControlType == FORM_CONTROL_TYPES.INPUT_DATE) {
+                          <div [class]="this.setFormControls.formControlCssClasses[index]">
+                            <mat-form-field>
+                              <input matInput [matDatepicker]="picker"
+                                class="{{this.setFormControls.formControlCssClasses[index] != undefined ? this.setFormControls.formControlCssClasses[index] : ''}}"
+                                formControlName="{{ this.setFormControls.formControlNames[index] }}"
+                                (keyup)="this.changeListener($event)"
+                                (dateChange)="this.changeListener($event)"
+                                autocomplete="off" placeholder="{{ this.setFormControls.formControlLabels[index] }}">
+                                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                              </mat-form-field>
+                            </div>
+                          }
+                          @if (formControlType == FORM_CONTROL_TYPES.INPUT_DATE_CALLBACK) {
+                            <div [class]="this.setFormControls.formControlCssClasses[index]">
+                              <mat-form-field>
+                                <input matInput [matDatepicker]="picker"
+                                  class="{{this.setFormControls.formControlCssClasses[index] != undefined ? this.setFormControls.formControlCssClasses[index] : ''}}"
+                                  formControlName="{{ this.setFormControls.formControlNames[index] }}"
+                                  (onfocusout)="this.inputCallbackConditional(index, this.setFormControls.formControlNames[index], $any($event).target.value)"
+                                  (dateChange)="this.inputCallback(index, this.setFormControls.formControlNames[index], $any($event).target.value)"
+                                  autocomplete="off" placeholder="{{ this.setFormControls.formControlLabels[index] }}">
+                                  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                                  <mat-datepicker #picker></mat-datepicker>
+                                </mat-form-field>
+                              </div>
+                            }
+                            @if (formControlType == FORM_CONTROL_TYPES.INPUT_SELECT) {
+                              <div [class]="this.setFormControls.formControlCssClasses[index]">
+                                <mat-form-field>
+                                  <mat-label>{{ this.setFormControls.formControlLabels[index] }}</mat-label>
+                                  <mat-select formControlName="{{ this.setFormControls.formControlNames[index] }}"
+                                    (selectionChange)="this.changeListener($event)">
+                                    @for (item of this.getAdditionalValues(this.setFormControls.formControlNames[index]); track item) {
+                                      <mat-option [value]="item">{{ item }}</mat-option>
+                                    }
+                                  </mat-select>
+                                </mat-form-field>
+                              </div>
+                            }
+                            @if (formControlType == FORM_CONTROL_TYPES.INPUT_SELECT_CALLBACK) {
+                              <div [class]="this.setFormControls.formControlCssClasses[index]">
+                                <mat-form-field>
+                                  <mat-label>{{ this.setFormControls.formControlLabels[index] }}</mat-label>
+                                  <mat-select formControlName="{{ this.setFormControls.formControlNames[index] }}"
+                                    (selectionChange)="this.selectionCallback(index, this.setFormControls.formControlNames[index])">
+                                    @for (item of this.getAdditionalValues(this.setFormControls.formControlNames[index]); track item; let itemIndex = $index) {
+                                      <mat-option
+                                      [value]="item" >{{item}}</mat-option>
+                                    }
+                                  </mat-select>
+                                </mat-form-field>
+                              </div>
+                            }
+                            @if (formControlType == FORM_CONTROL_TYPES.INPUT_SELECT_MULTI) {
+                              <div [class]="this.setFormControls.formControlCssClasses[index]">
+                                <mat-form-field>
+                                  <mat-label>{{ this.setFormControls.formControlLabels[index] }}</mat-label>
+                                  <mat-select formControlName="{{ this.setFormControls.formControlNames[index] }}"
+                                    (selectionChange)="this.changeListener($event)"
+                                    multiple>
+                                    @for (item of this.getAdditionalValues(this.setFormControls.formControlNames[index]); track item) {
+                                      <mat-option [value]="item">{{ item }}</mat-option>
+                                    }
+                                  </mat-select>
+                                </mat-form-field>
+                              </div>
+                            }
+                            @if (formControlType == FORM_CONTROL_TYPES.INPUT_SELECT_MULTI_CALLBACK) {
+                              <div [class]="this.setFormControls.formControlCssClasses[index]">
+                                <mat-form-field>
+                                  <mat-label>{{ this.setFormControls.formControlLabels[index] }}</mat-label>
+                                  <mat-select formControlName="{{ this.setFormControls.formControlNames[index] }}"
+                                    (selectionChange)="this.selectionCallback(index, this.setFormControls.formControlNames[index] )"
+                                    multiple>
+                                    @for (item of this.getAdditionalValues(this.setFormControls.formControlNames[index]); track item; let itemIndex = $index) {
+                                      <mat-option
+                                      [value]="item">{{item}}</mat-option>
+                                    }
+                                  </mat-select>
+                                </mat-form-field>
+                              </div>
+                            }
+                            @if (formControlType == FORM_CONTROL_TYPES.INPUT_TEXTAREA) {
+                              <div [class]="this.setFormControls.formControlCssClasses[index]">
+                                <mat-form-field>
+                                  <textarea [rows]="this.getRows(index)" [cols]="this.getColumns(index)" matInput placeholder="{{ this.setFormControls.formControlLabels[index] }}" formControlName="{{ this.setFormControls.formControlNames[index] }}"></textarea>
+                                </mat-form-field>
+                              </div>
+                            }
+                            @if (formControlType == FORM_CONTROL_TYPES.INPUT_TEXTAREA_CALLBACK) {
+                              <div [class]="this.setFormControls.formControlCssClasses[index]">
+                                <mat-form-field>
+                                  <textarea [rows]="this.getRows(index)" [cols]="this.getColumns(index)" matInput placeholder="{{ this.setFormControls.formControlLabels[index] }}" formControlName="{{ this.setFormControls.formControlNames[index] }}"
+                                  (keyup)="this.inputCallback(index, this.setFormControls.formControlNames[index], $any($event).target.value)"></textarea>
+                                </mat-form-field>
+                              </div>
+                            }
+                          }
+                          <div class="form-button">
+                            <button mat-raised-button color="primary" type="submit" [disabled]="!this.enableSubmitButton()">Submit</button>
+                            <button mat-raised-button color="warn" type="button" (click)="this.resetForm()">Reset</button>
+                          </div>
+                        </form>
+                      </div>
+                    }
