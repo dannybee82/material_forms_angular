@@ -1,7 +1,7 @@
 
 @if (this.formData.length > 0) {
   <div [class]="this.containerCssClass">
-    <form [formGroup]="this.setFormControls.formControlGroup" (ngSubmit)="this.callbackSubmit()" (keydown.enter)="$event.preventDefault()">
+    <form [formGroup]="this.setFormControls.formControlGroup" (ngSubmit)="this.callbackSubmit()" (keydown.enter)="$event.preventDefault()" #materialForm="ngForm" >
       @for (formControlType of this.setFormControls.formControlTypes; track formControlType; let index = $index) {
         @if (formControlType == FORM_CONTROL_TYPES.INPUT_TEXT) {
           <div [class]="this.setFormControls.formControlCssClasses[index]">

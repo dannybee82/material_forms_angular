@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FORM_CONTROL_TYPES, SetFormControls } from '../form-controls/SetFormControls'
 import { FormDataModel } from 'src/app/models/FormDataModel';
 import { FormDataResponse } from 'src/app/models/FormDataResponse';
 import { DataFromInput } from 'src/app/models/DataFromInput';
 import { Observable, map, startWith } from 'rxjs';
-import { FormControl } from '@angular/forms';
+import { FormControl, NgForm } from '@angular/forms';
 import { AdditionalFormDataModel } from 'src/app/models/AdditionalFormDataModel';
 
 @Component({
@@ -19,6 +19,8 @@ export class MaterialFormFieldsComponent {
 
   @Output() formSubmitted: EventEmitter<FormDataResponse> = new EventEmitter<FormDataResponse>();
   @Output() callbackFunction: EventEmitter<DataFromInput> = new EventEmitter<DataFromInput>();
+
+  @ViewChild('materialForm') materialForm!: NgForm;
 
   readonly FORM_CONTROL_TYPES = FORM_CONTROL_TYPES;
 
@@ -65,6 +67,8 @@ export class MaterialFormFieldsComponent {
     controlNames.forEach(item => {
       this.setFormControls.formControlGroup.controls[item].setValue(null);
     });    
+
+    this.materialForm.reset();
   }
 
   changeListener($event: any) : void {
