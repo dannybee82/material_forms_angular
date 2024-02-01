@@ -6,8 +6,19 @@ import { DataFromInput } from 'src/app/models/DataFromInput';
 import { Observable, map, startWith } from 'rxjs';
 import { FormControl, NgForm } from '@angular/forms';
 import { AdditionalFormDataModel } from 'src/app/models/AdditionalFormDataModel';
+import { AllAngularMaterialModules } from 'src/app/all-angular-material.modules';
+import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
+	standalone: true,
+	imports: [
+		AllAngularMaterialModules,
+		FormsModule,
+		ReactiveFormsModule,
+		CommonModule,
+	],
   selector: 'app-material-form-fields',
   templateUrl: './material-form-fields.component.html',
   styleUrls: ['./material-form-fields.component.scss']

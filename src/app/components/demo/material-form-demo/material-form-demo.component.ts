@@ -6,8 +6,15 @@ import { FORM_VALIDATORS } from '../../form-controls/SetFormControls';
 import { AdditionalFormDataModel } from 'src/app/models/AdditionalFormDataModel';
 import { DatePipe } from '@angular/common';
 import { SharedFunctions } from 'src/app/shared_functions/shared-functions';
+import { BackToMainComponent } from 'src/app/components/back-to-main/back-to-main.component';
+import { MaterialFormFieldsComponent } from 'src/app/components/material-form-fields/material-form-fields.component';
 
 @Component({
+	standalone: true,
+	imports: [
+		BackToMainComponent,
+		MaterialFormFieldsComponent,
+	],
   selector: 'app-material-form-demo',
   templateUrl: './material-form-demo.component.html',
   styleUrls: ['./material-form-demo.component.scss'],

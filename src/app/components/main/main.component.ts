@@ -1,7 +1,12 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AllAngularMaterialModules } from 'src/app/all-angular-material.modules';
 
 @Component({
+	standalone: true,
+	imports: [
+		AllAngularMaterialModules,
+	],
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']

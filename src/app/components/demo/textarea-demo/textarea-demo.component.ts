@@ -4,8 +4,15 @@ import { FORM_CONTROL_TYPES } from '../../form-controls/SetFormControls';
 import { FORM_VALIDATORS } from '../../form-controls/SetFormControls';
 import { SharedFunctions } from 'src/app/shared_functions/shared-functions';
 import { AdditionalFormDataModel } from 'src/app/models/AdditionalFormDataModel';
+import { BackToMainComponent } from 'src/app/components/back-to-main/back-to-main.component';
+import { MaterialFormFieldsComponent } from 'src/app/components/material-form-fields/material-form-fields.component';
 
 @Component({
+	standalone: true,
+	imports: [
+		BackToMainComponent,
+		MaterialFormFieldsComponent,
+	],
   selector: 'app-textarea-demo',
   templateUrl: './textarea-demo.component.html',
   styleUrl: './textarea-demo.component.scss'
