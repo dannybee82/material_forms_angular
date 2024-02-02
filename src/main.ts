@@ -10,12 +10,12 @@ import { registerLocaleData } from '@angular/common';
 registerLocaleData(localeNl);
 
 bootstrapApplication(AppComponent, {
-providers: [
-		provideRouter(routes),
-		provideAnimations(),
-		{
-			provide: LOCALE_ID,
-			useValue: 'nl-NL'
-		}
-]
+	providers: [
+			provideRouter(routes),
+			provideAnimations(),
+			{
+				provide: LOCALE_ID,
+				useValue: 'nl-NL'
+			}
+	]
 })
