@@ -4,7 +4,6 @@ import { FormDataModel } from 'src/app/models/FormDataModel';
 import { FORM_CONTROL_TYPES } from '../../form-controls/SetFormControls';
 import { FORM_VALIDATORS } from '../../form-controls/SetFormControls';
 import { AdditionalFormDataModel } from 'src/app/models/AdditionalFormDataModel';
-import { DatePipe } from '@angular/common';
 import { SharedFunctions } from 'src/app/shared_functions/shared-functions';
 import { BackToMainComponent } from 'src/app/components/back-to-main/back-to-main.component';
 import { MaterialFormFieldsComponent } from 'src/app/components/material-form-fields/material-form-fields.component';
@@ -17,8 +16,7 @@ import { MaterialFormFieldsComponent } from 'src/app/components/material-form-fi
 	],
   selector: 'app-material-form-demo',
   templateUrl: './material-form-demo.component.html',
-  styleUrls: ['./material-form-demo.component.scss'],
-  providers: [DatePipe]
+  styleUrls: ['./material-form-demo.component.scss']
 })
 export class MaterialFormDemoComponent extends SharedFunctions {
 

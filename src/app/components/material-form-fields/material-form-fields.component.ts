@@ -17,7 +17,7 @@ import { CommonModule } from '@angular/common';
 		AllAngularMaterialModules,
 		FormsModule,
 		ReactiveFormsModule,
-		CommonModule,
+		CommonModule    
 	],
   selector: 'app-material-form-fields',
   templateUrl: './material-form-fields.component.html',

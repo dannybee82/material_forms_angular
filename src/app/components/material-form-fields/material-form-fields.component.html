@@ -137,7 +137,7 @@
                                 (dateChange)="this.changeListener($event)"
                                 autocomplete="off" placeholder="{{ this.setFormControls.formControlLabels[index] }}">
                                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                                <mat-datepicker #picker></mat-datepicker>
+                                <mat-datepicker #picker startView="year"></mat-datepicker>
                               </mat-form-field>
                             </div>
                           }
@@ -148,7 +148,7 @@
                                   class="{{this.setFormControls.formControlCssClasses[index] != undefined ? this.setFormControls.formControlCssClasses[index] : ''}}"
                                   formControlName="{{ this.setFormControls.formControlNames[index] }}"
                                   (onfocusout)="this.inputCallbackConditional(index, this.setFormControls.formControlNames[index], $any($event).target.value)"
-                                  (dateChange)="this.inputCallback(index, this.setFormControls.formControlNames[index], $any($event).target.value)"
+                                  (dateChange)="this.inputCallbackConditional(index, this.setFormControls.formControlNames[index], $any($event).target.value)"
                                   autocomplete="off" placeholder="{{ this.setFormControls.formControlLabels[index] }}">
                                   <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                                   <mat-datepicker #picker></mat-datepicker>
