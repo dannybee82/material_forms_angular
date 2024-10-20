@@ -39,6 +39,10 @@ export class MainComponent {
     this.router.navigate(['textarea-demo']);
   }
 
+  gotoInputDialogDemo(): void {
+    this.router.navigate(['input-dialog-demo']);
+  }
+
   gotoAllPage() : void {
     this.router.navigate(['all']);
   }

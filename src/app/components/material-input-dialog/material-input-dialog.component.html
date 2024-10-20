@@ -1,0 +1,12 @@
+<mat-dialog-content>
+    <form [formGroup]="form">
+        <mat-form-field class="full-width">
+          <mat-label>Your input:</mat-label>
+          <input matInput type="text" formControlName="input" placeholder="Your input" />
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="closeDialog()" color="warn">Cancel</button>
+    <button mat-button (click)="getData()" color="primary" [disabled]="!this.form.valid">Ok</button>
+</mat-dialog-actions>

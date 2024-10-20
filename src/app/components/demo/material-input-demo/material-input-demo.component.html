@@ -1,0 +1,12 @@
+<div class="show-flex-column">
+    <app-back-to-main></app-back-to-main>
+    @if(this.returnedDataFromInputDialog() !== '') {
+        <h3>Returned data from dialog: <strong>{{this.returnedDataFromInputDialog()}}</strong></h3>
+    }
+    <div class="column">
+        <button type="button" mat-stroked-button (click)="this.openDialog()">
+            <mat-icon>input</mat-icon>
+            <span>Show Input Dialog</span>
+        </button>
+    </div>
+</div>

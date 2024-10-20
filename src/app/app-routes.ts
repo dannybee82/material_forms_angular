@@ -10,6 +10,7 @@ export const routes: Routes = [
   { path: 'single-select-demo', loadComponent: () => import('src/app/components/demo/single-selects/single-selects.component').then(m => m.SingleSelectsComponent) },
   { path: 'multiple-select-demo', loadComponent: () => import('src/app/components/demo/multiple-selects/multiple-selects.component').then(m => m.MultipleSelectsComponent) },
   { path: 'textarea-demo', loadComponent: () => import('src/app/components/demo/textarea-demo/textarea-demo.component').then(m => m.TextareaDemoComponent) },
+  { path: 'input-dialog-demo', loadComponent: () => import('src/app/components/demo/material-input-demo/material-input-demo.component').then(m => m.MaterialInputDemoComponent) },
   { path: 'all', loadComponent: () => import('src/app/components/demo/material-form-demo/material-form-demo.component').then(m => m.MaterialFormDemoComponent) }
 
 ];
