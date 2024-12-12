@@ -2,7 +2,7 @@
 
 \- Demo application Angular Material Forms.
 
-\- Angular 18 application + Angular Material.
+\- Angular 19 application + Angular Material.
 
 \- Shows various input-fields with callbacks.
 
