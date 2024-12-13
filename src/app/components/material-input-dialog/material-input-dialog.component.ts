@@ -7,7 +7,6 @@ import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-material-input-dialog',
-  standalone: true,
   imports: [
     FormsModule,
     ReactiveFormsModule,

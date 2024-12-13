@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AllAngularMaterialModules } from 'src/app/all-angular-material.modules';
 
 @Component({
-	standalone: true,
 	imports: [
 		AllAngularMaterialModules,
 	],
@@ -13,7 +12,7 @@ import { AllAngularMaterialModules } from 'src/app/all-angular-material.modules'
 })
 export class BackToMainComponent {
 
-  constructor(private router: Router) {}
+	private router = inject(Router);
 
   goBackToMain() : void {
     this.router.navigate(['']);

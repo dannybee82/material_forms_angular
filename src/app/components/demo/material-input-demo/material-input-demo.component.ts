@@ -7,7 +7,6 @@ import { BackToMainComponent } from '../../back-to-main/back-to-main.component';
 
 @Component({
   selector: 'app-material-input-demo',
-  standalone: true,
   imports: [
     AllAngularMaterialModules,
     BackToMainComponent

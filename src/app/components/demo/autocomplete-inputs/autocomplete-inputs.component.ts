@@ -7,7 +7,6 @@ import { BackToMainComponent } from 'src/app/components/back-to-main/back-to-mai
 import { MaterialFormFieldsComponent } from 'src/app/components/material-form-fields/material-form-fields.component';
 
 @Component({
-	standalone: true,
 	imports: [
 		BackToMainComponent,
 		MaterialFormFieldsComponent,
