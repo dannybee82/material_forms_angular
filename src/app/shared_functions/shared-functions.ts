@@ -1,55 +1,45 @@
-import { DatePipe } from "@angular/common";
-import { DataFromInput } from "../models/DataFromInput";
-import { FormDataModel } from "../models/FormDataModel";
-import { FormDataResponse } from "../models/FormDataResponse";
+import { FormDataResultInterface } from "../models/interfaces/form-data-result.interface";
+import { Component, computed, inject, OnDestroy, signal, WritableSignal } from "@angular/core";
+import { MaterialSnackbarComponent } from "../components/material-snackbar/material-snackbar.component";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { FormDataCallbackInterface } from "../models/interfaces/form-data.callback.interface";
 
-export class SharedFunctions {
+@Component({
+    template: ``
+})
+export class SharedFunctions implements OnDestroy {
 
-    public formControls: FormDataModel[] = [];
+    protected dataFromSubmit: WritableSignal<FormDataResultInterface | undefined> = signal<FormDataResultInterface | undefined>(undefined);
+    protected dataFromCallback: WritableSignal<FormDataCallbackInterface | undefined> = signal<FormDataCallbackInterface | undefined>(undefined);
 
-    public output: string = "";
-    public errors: string[] = [];
+    protected readonly dataFromSubmitView = computed(() => {
+      const r = this.dataFromSubmit();
+      return r && { ...r, data: Object.fromEntries(r.data) };
+    });
 
-    private datePipe: DatePipe = new DatePipe('nl-NL');
+    protected readonly dataFromCallbackView = computed(() => {
+      const r = this.dataFromCallback();
+      return r && { ...r, data: Object.fromEntries(r.data) };
+    });
 
-    showData(formDataResponse: FormDataResponse): void {
-        if (formDataResponse.formGroup.valid) {
-            this.errors = [];
-            this.output = '';
+    private readonly materialSnackbar = inject(MatSnackBar);
 
-            let allFieldNames: string[] = [];
-
-            this.formControls.forEach(item => allFieldNames.push(item.fieldName));
-
-            allFieldNames.forEach(item => {
-                if (item === 'birth_date' || item === 'birth_date_callback') {
-                    let date: Date = (formDataResponse.formGroup.get(item)?.value) as Date;
-                    this.output += formDataResponse.formGroup.get(item)?.value !== '' ? this.datePipe.transform(date, 'dd-MM-YYYY') : '???';
-                } else {
-                    this.output += formDataResponse.formGroup.get(item)?.value !== '' ? formDataResponse.formGroup.get(item)?.value : '???';
-                }
-
-                this.output += "<br/>";
-            });
-        } else {
-            this.output = "Contains invalid data.";
-            this.errors = formDataResponse.errors;
-        }
+    protected showData(formDataResponse: FormDataResultInterface): void {
+        this.dataFromSubmit.set(formDataResponse);
+        this.materialSnackbar.openFromComponent(MaterialSnackbarComponent, {
+            data: `<strong>Data Submit:</strong><br/><pre>${JSON.stringify(this.dataFromSubmitView(), null, " ")}</pre>`
+        });
     }
 
-    receiveCallback(data: DataFromInput): void {
-        if (data.name === 'birth_date_callback') {
-            try {
-                let date = data.value as Date;
-                let dateTransformed = this.datePipe.transform(date, 'dd-MM-YYYY') || '';
+    protected receiveCallback(data: FormDataCallbackInterface): void {
+        this.dataFromCallback.set(data);
+        this.materialSnackbar.openFromComponent(MaterialSnackbarComponent, {
+            data: `<strong>Callback:</strong><br/><pre>${JSON.stringify(this.dataFromCallbackView(), null, " ")}</pre>`
+        });
+    }
 
-                this.output = "Data From callback: " + data.index + " - " + data.name + " - " + dateTransformed;
-            } catch {
-                this.output = "Data From callback: " + data.index + " - " + data.name + " - " + 'date is invalid';
-            }
-        } else {
-            this.output = "Data From callback: " + data.index + " - " + data.name + " - " + data.value;
-        }
+    ngOnDestroy(): void {
+        this.materialSnackbar.dismiss();        
     }
 
 }

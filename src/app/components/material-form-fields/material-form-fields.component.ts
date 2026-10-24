@@ -1,22 +1,24 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { FORM_CONTROL_TYPES, SetFormControls } from '../form-controls/SetFormControls'
-import { FormDataModel } from 'src/app/models/FormDataModel';
-import { FormDataResponse } from 'src/app/models/FormDataResponse';
-import { DataFromInput } from 'src/app/models/DataFromInput';
-import { Observable, map, startWith } from 'rxjs';
+import { Component, input, InputSignal, OnInit, output, OutputEmitterRef, Signal, viewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, NgForm } from '@angular/forms';
-import { AdditionalFormDataModel } from 'src/app/models/AdditionalFormDataModel';
+import { GenericFormInterface } from 'src/app/models/interfaces/generic-form.interface';
+import { InputTypeEnum } from 'src/app/models/enums/input-type.enum';
+import { SetFormControls } from 'src/app/shared_functions/set-form-controls.class';
+import { GenericFormFieldInterface } from 'src/app/models/interfaces/generic-form-field.interface';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AsyncPipe } from '@angular/common';
+import { GenericAdditionalDataInterface } from 'src/app/models/interfaces/generic-additional-data.interface';
+import { map, Observable, startWith, Subject } from 'rxjs';
+import { GenericFormOptionInterface } from 'src/app/models/interfaces/generic-form-option.interface';
+import { FormDataResultInterface } from 'src/app/models/interfaces/form-data-result.interface';
 import { AllAngularMaterialModules } from 'src/app/all-angular-material.modules';
-import { FormsModule } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { FormDataCallbackInterface } from 'src/app/models/interfaces/form-data.callback.interface';
 
 @Component({
 	imports: [
 		AllAngularMaterialModules,
 		FormsModule,
 		ReactiveFormsModule,
-		CommonModule    
+    AsyncPipe
 	],
   selector: 'app-material-form-fields',
   templateUrl: './material-form-fields.component.html',
@@ -24,219 +26,234 @@ import { CommonModule } from '@angular/common';
 })
 export class MaterialFormFieldsComponent {
 
-  @Input() formData: FormDataModel[] = [];
-  @Input() containerCssClass: string = "";
+  readonly formData: InputSignal<GenericFormInterface> = input.required<GenericFormInterface>();
+  readonly getFormData: InputSignal<Subject<boolean> | undefined> = input.required<Subject<boolean> | undefined>();
 
-  @Output() formSubmitted: EventEmitter<FormDataResponse> = new EventEmitter<FormDataResponse>();
-  @Output() callbackFunction: EventEmitter<DataFromInput> = new EventEmitter<DataFromInput>();
+  protected readonly formSubmit: OutputEmitterRef<FormDataResultInterface> = output<FormDataResultInterface>();
+  protected readonly formCallback: OutputEmitterRef<FormDataCallbackInterface> = output<FormDataCallbackInterface>();
 
-  @ViewChild('materialForm') materialForm!: NgForm;
+  protected readonly materialForm: Signal<NgForm | undefined> = viewChild<NgForm | undefined>('materialForm');
 
-  readonly FORM_CONTROL_TYPES = FORM_CONTROL_TYPES;
+  public formControls: SetFormControls = new SetFormControls(undefined);
 
-  public changesMade: boolean = false;
-
-  public setFormControls: SetFormControls = new SetFormControls(undefined);
-
-  ngOnInit() {
+  ngOnInit(): void {
     this.setupFormControls();
 
-    if(this.formData != undefined) {
-      this.formData.forEach(item => {
-        let obs: Observable<any> | undefined = this.setFormControls.getObservable(item.fieldName);
-        
-        if(obs != undefined) {
-          let fc: FormControl | undefined = this.setFormControls.getFormControlByName(item.fieldName);
+     this.formData().formFields.forEach((item: GenericFormFieldInterface) => {
+      // Add Observables, when there is an Observable.
+      const obs: Observable<string[] | number[] | boolean[]> | undefined = this.formControls.getObservable(item.property);
+    
+      if(obs) {
+        const fc: FormControl | undefined = this.formControls.getFormControlByName(item.property);
 
-          if(fc != undefined) {
-            this.addObservables(obs, fc, item.fieldName);
-          }
+        if(fc) {
+          this.addObservables(obs, fc, item.property);
         }
+      }
 
-        //Set data for text areas.
-        if(item.fieldType === FORM_CONTROL_TYPES.INPUT_TEXTAREA || item.fieldType === FORM_CONTROL_TYPES.INPUT_TEXTAREA_CALLBACK) {
-          let fc: FormControl | undefined = this.setFormControls.getFormControlByName(item.fieldName);
+      // Quirk: Set values for Text Areas.
+      const fc: FormControl | undefined = this.formControls.getFormControlByName(item.property);
 
-          if(fc != undefined) {
-            let text: any[] | null | undefined = this.getAdditionalValues(item.fieldName);
-            fc.setValue(text ? text[0] : '');
+      if(fc) {
+        fc.setValue(item.value);
+      }
+     });
+
+     if(this.getFormData()) {
+        this.getFormData()!.subscribe((requestForData: boolean) => {
+          if(requestForData) {
+            this.callbackSubmit();
           }
-        }
-      });
-    }
+        });
+     }
   }
 
   callbackSubmit() : void {
-    this.setFormControls.formControlGroup.markAllAsTouched();
-    this.formSubmitted.emit(new FormDataResponse(this.setFormControls.formControlGroup, this.setFormControls.getErrors()));
+    this.formControls.formControlGroup.markAllAsTouched();
+    const data: Map<string, any> = new Map<string, any>();
+
+    Object.keys(this.formControls.formControlGroup.controls).forEach((k: string) => {
+      const field: GenericFormFieldInterface | undefined = this.formData().formFields.find(item => item.property === k);  
+      if(field) {
+        if(field.inputType === InputTypeEnum.INPUT_DATE || field.inputType === InputTypeEnum.INPUT_DATE_CALLBACK) {
+          // Fix bug with dates.
+          const value = this.correctDate(this.formControls.formControlGroup.controls[k].value as Date);
+          data.set(k, value);
+        } else {
+          const value = this.formControls.formControlGroup.controls[k].value;
+          data.set(k, value);
+        }
+      } else {
+        const value = this.formControls.formControlGroup.controls[k].value;
+        data.set(k, value);
+      }      
+    });
+    const errors: string[] = this.formControls.getErrors();
+    const result: FormDataResultInterface = {
+      hasErrors: errors.length > 0 ? true : false,
+      errors: errors,
+      data: data
+    };
+
+    this.formSubmit.emit(result);
   }
 
-  resetForm() : void {
-    this.changesMade = false;
-    const controlNames = Object.keys(this.setFormControls.formControlGroup.controls);
+  protected resetForm() : void {
+    const controlNames = Object.keys(this.formControls.formControlGroup.controls);
     controlNames.forEach(item => {
-      this.setFormControls.formControlGroup.controls[item].setValue(null);
+      this.formControls.formControlGroup.controls[item].setValue(null);
     });    
 
-    this.materialForm.reset();
+    if(this.materialForm()) {
+      this.materialForm()!.reset();
+    }    
   }
 
-  changeListener($event: any) : void {
-    this.changesMade = true;
-  }
+  protected inputCallback(index: number, property: string, value: string | number | boolean | Date | object) : void {
+    const field: GenericFormFieldInterface | undefined = (index < this.formData().formFields.length && index > -1) ? 
+      this.formData().formFields[index] :
+      undefined;
 
-  inputCallback(index: number, name: string, value: any) : void {
-    this.changesMade = true;
-    this.callbackFunction.emit(new DataFromInput(index, name, value));
-  }  
-
-  inputCallbackConditional(index: number, name: string, value: any) {
-    if(this.hasAttribute(name, 'conditionalRegex')) {
-      let regex: RegExp | null = this.getAttribute(name, 'conditionalRegex', null);
-
-      if(regex != null && value != null) {
-        if(value.toString().match(regex)) {
-          this.changesMade = true;
-          this.callbackFunction.emit(new DataFromInput(index, name, value));
+    if(field) {
+      if(field.inputType === InputTypeEnum.INPUT_DATE || field.inputType === InputTypeEnum.INPUT_DATE_CALLBACK) {
+        // Fix bug with dates.
+        const correctedDate = this.correctDate(value as Date);
+        if(correctedDate) {
+          value = correctedDate;
         }
+        // also store its value.
+        if(value) {
+          field.value = value as Date;
+        }        
       }
     }
-  }
+     
+    const data: Map<string, any> = new Map<string, any>([
+      ["property", property],
+      ["value", value]
+    ]);
+    const result: FormDataCallbackInterface = {
+      data: data
+    };
+    this.formCallback.emit(result);
+  }  
 
-  selectionCallback(index: number, name: string) : void {
-    this.changesMade = true;
-    let fc: FormControl | undefined = this.setFormControls.getFormControlByName(name);
+  protected getOptions(property: string): GenericFormOptionInterface[] {
+    const found: GenericFormFieldInterface | undefined = this.formData().formFields.find(item => item.property === property);
 
-    if(fc != undefined) {
-      this.callbackFunction.emit(new DataFromInput(index, name, fc.value));
+    if(found) {
+      return found.options;
     }
-  }
-  
-  getAdditionalValues(fieldname: string) : any[] | null | undefined {
-    if(this.setFormControls.additionalFormData != undefined) {
-      let additionalData: any | undefined = this.setFormControls.additionalFormData.find(item => item.fieldname === fieldname);
 
-      if(additionalData != undefined) {
-        return additionalData.data
+    return [];
+  }
+
+  protected getOptionsOfField(property: string) : string[] | number[] | boolean[] | null | undefined {
+    const formField: GenericFormFieldInterface | undefined = this.formData().formFields.find(item => item.property === property);
+
+    if(formField) {
+      switch(formField.inputType) {
+        case InputTypeEnum.INPUT_TEXT_AUTOCOMPLETE:
+          return formField.options.map(item => item.label);
+        case InputTypeEnum.INPUT_TEXT_AUTOCOMPLETE_CALLBACK:
+          return formField.options.map(item => item.label);
       }
     }
 
     return undefined;
   }
 
-  hasAttribute(fieldname: string, attribute: string) : boolean {
-    if(this.setFormControls.additionalFormData != undefined) {
-      let additionalData: any | undefined = this.setFormControls.additionalFormData.find(item => item.fieldname === fieldname);
+  protected selectionCallback(index: number, property: string) : void {
+    const fc: FormControl | undefined = this.formControls.getFormControlByName(property);
 
-      if(additionalData.attributes != undefined) {
-        let keys = Object.keys(additionalData);
-        return (keys.indexOf(attribute) > -1) ? true : false;
+    if(fc) {
+      const data: Map<string, any> = (new Map<string, any>([
+        ["name", property],
+        ["value", fc.value]
+      ]));
+      const result: FormDataCallbackInterface = {
+        data: data
+      };
+      this.formCallback.emit(result);
+    }
+  }
+
+  protected getAdditionalData(index: number, attribute: string): string | number | boolean | RegExp | null | undefined {
+    if(index < (this.formData()?.formFields.length ?? 0)) {
+      let formField: GenericFormFieldInterface = this.formData().formFields[index];
+
+      if(formField.additionalData) {
+        const item: GenericAdditionalDataInterface | undefined = formField.additionalData.find(item => item.attribute === attribute);
+        if(item) {
+          return item.value;
+        }
       }
+    }
+
+    return undefined;
+  }
+
+  protected hasAttribute(property: string, attribute: string): boolean {
+    const additionalData: GenericAdditionalDataInterface | undefined = this.formControls.getAdditionalDataAttribute(property, attribute);
+
+    if(additionalData) {
+      return true;
     }
 
     return false;
   }
 
-  getAttribute(fieldname: string, attribute: string, defaultValue: any) : any {
-    if(this.setFormControls.additionalFormData != undefined) {
-      let additionalData: any | undefined = this.setFormControls.additionalFormData.find(item => item.fieldname === fieldname);
+  protected getAttribute(property: string, attribute: string, defaultValue: string | number | boolean | Date | RegExp | object | null): string | number | boolean | Date | RegExp | object | null {
+    const additionalData: GenericAdditionalDataInterface | undefined = this.formControls.getAdditionalDataAttribute(property, attribute);
 
-      if(additionalData.attributes != undefined) {
-        let keys = Object.keys(additionalData.attributes);
-        let values = Object.values(additionalData.attributes);
-        let found = keys.indexOf(attribute);
-
-        if(found > -1) {
-          return values[found];
-        }
-      }
+    if(additionalData) {
+      return additionalData.value;
     }
 
     return defaultValue;
   }
 
-  enableSubmitButton() : boolean {
-    if(this.changesMade) {
-      return true;
-    }
-
-    if(this.setFormControls.formControlGroup.valid) {
-      return true;
-    }
-
-    return false;
+  protected getFormControlTypeEnum(): typeof InputTypeEnum {
+    return InputTypeEnum;
   }
 
-  getRows(index: number) : number | undefined {
-    if(index < this.formData.length) {
-      let data: FormDataModel = this.formData[index];
-
-      if(data.fieldAdditionalData != null && data.fieldAdditionalData != undefined) {
-        let additionalData: AdditionalFormDataModel = data.fieldAdditionalData;
-        
-        if(additionalData.attributes != null && additionalData.attributes != undefined) {
-          let obj: object = additionalData.attributes;
-          let keys: string[] = Object.keys(obj);
-          let values: any[] = Object.values(obj);
-          let found: number = keys.indexOf('rows');
-
-          if(found > -1) {
-            return values[found];
-          }
-        }
-      }
-    }
-
-    return undefined;
+  private setupFormControls(): void {
+    this.formControls = new SetFormControls(this.formData().formFields);
   }
 
-  getColumns(index: number) :  number | undefined {
-    if(index < this.formData.length) {
-      let data: FormDataModel = this.formData[index];
-
-      if(data.fieldAdditionalData != null && data.fieldAdditionalData != undefined) {
-        let additionalData: AdditionalFormDataModel = data.fieldAdditionalData;
-        
-        if(additionalData.attributes != null && additionalData.attributes != undefined) {
-          let obj: object = additionalData.attributes;
-          let keys: string[] = Object.keys(obj);
-          let values: any[] = Object.values(obj);
-          let found: number = keys.indexOf('columns');
-
-          if(found > -1) {
-            return values[found];
-          }
-        }
-      }
-    }
-
-    return undefined;
-  }
-
-  private setupFormControls() {
-    this.setFormControls = new SetFormControls(this.formData);
-  }
-
-  private _filter(value: string, fieldname: string): string[] {
-    let options: any[] | undefined | null = this.getAdditionalValues(fieldname);
-
-    if(options != undefined && options != null) {
-      const filterValue = value.toLowerCase();
-      return options.filter(option => option.toLowerCase().includes(filterValue));
-    }
-    
-    return [];    
-  }
-
-  private addObservables(obs: Observable<any>, fc: FormControl, fieldName: string) : void {
-    if(fc != undefined) {
+  private addObservables(obs: Observable<string[] | number[] | boolean[]>, fc: FormControl, fieldName: string) : void {
+    if(fc) {      
       obs = fc.valueChanges.pipe(
         startWith(''),              
         map(value => this._filter(fc?.value || '', fieldName))
       );
     }
 
-    this.setFormControls.setObservable(fieldName, obs);
+    this.formControls.setObservable(fieldName, obs);
+  }
+
+  private _filter(value: string, property: string): string[] {
+    let options: string[] | number[] | boolean[] | undefined | null = this.getOptionsOfField(property);
+
+    if(options) {
+      const filterValue = value.toLowerCase();
+      return options.filter(option => option.toString().toLowerCase().includes(filterValue)).map(item => item.toString());
+    }
+    
+    return [];    
+  }
+
+  private correctDate(date?: Date): Date | undefined {
+    if(date) {
+       return new Date(
+        date!.getFullYear(),
+        date!.getMonth(),
+        date!.getDate(),
+        12
+      );
+    }
+    
+    return undefined;  
   }
 
 }

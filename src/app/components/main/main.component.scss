@@ -5,6 +5,7 @@
 
 .custom-ul-flex {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: flex-start;
+    gap: 8px;
 }

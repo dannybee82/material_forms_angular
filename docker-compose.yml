@@ -1,0 +1,15 @@
+services:
+  angular_app_material_forms:
+    hostname: angularapp
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    container_name: angular_app_material_forms
+    restart: unless-stopped
+    networks:
+      - angular-app
+    ports:
+      - "80:80"
+networks:
+  angular-app:
+    driver: bridge

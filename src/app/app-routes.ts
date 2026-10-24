@@ -35,6 +35,10 @@ export const routes: Routes = [
     loadComponent: () => import('src/app/components/demo/material-input-demo/material-input-demo.component').then((c) => c.MaterialInputDemoComponent),
   },
   {
+    path: 'email',
+    loadComponent: () => import('src/app/components/demo/email-demo/email-demo.component').then((c) => c.EmailDemoComponent),
+  },
+  {
     path: 'all',
     loadComponent: () => import('src/app/components/demo/material-form-demo/material-form-demo.component').then((c) => c.MaterialFormDemoComponent),
   },

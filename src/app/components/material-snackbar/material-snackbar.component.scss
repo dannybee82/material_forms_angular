@@ -1,0 +1,41 @@
+:host ::ng-deep {
+
+  .snackbar-content,
+  .snackbar-content pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .snackbar-content pre {
+    margin: 0;
+    font-family: inherit;
+  }
+}
+
+.snackbar-content {
+  background-color: #fff;
+  color: #000;
+  padding: 16px;
+  max-height: 40vh;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow: auto;
+}
+
+.snackbar-content pre {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: inherit;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+.snackbar-dismiss {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.snackbar-dismiss:hover {
+  text-decoration: underline;
+  color: yellow;
+  cursor: pointer;
+}

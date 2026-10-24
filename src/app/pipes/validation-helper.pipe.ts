@@ -1,10 +1,10 @@
-import { Pipe } from "@angular/core";
+import { Pipe, PipeTransform } from "@angular/core";
 import { FormControl, ValidationErrors } from "@angular/forms";
 
 @Pipe({
     name: "validationFormat"
 })
-export class ValidationHelper {
+export class ValidationHelper implements PipeTransform {
 
     private _fieldsMap: Map<string, string> = new Map<string, string>();
 
@@ -46,11 +46,17 @@ export class ValidationHelper {
                 case "maximumFloat":
                     messages.push(`${this._fieldsMap.get(name)} has a value of ${errors['maximumFloat'].actual} that is higher than maximum: ${errors['maximumFloat'].maximum}.`);
                     break;
+                case "invalidDate":
+                    messages.push(`${this._fieldsMap.get(name)} contains an invalid date`);
+                    break;
                 case "minimumTime":
                     messages.push(`${this._fieldsMap.get(name)}${errors['minimumTime'].type} is too low: ${errors['minimumTime'].actual} - must be higher or equal to: ${errors['minimumTime'].minimumTime}.`);
                     break;
                 case "maximumTime":
                     messages.push(`${this._fieldsMap.get(name)}${errors['maximumTime'].type} is too high ${errors['maximumTime'].actual} - must be lower or equal to: ${errors['maximumTime'].maximumTime}.`);
+                    break;
+                case "email":
+                    messages.push(`${this._fieldsMap.get(name)} contains an invalid email address.`);
                     break;
             }         
         }

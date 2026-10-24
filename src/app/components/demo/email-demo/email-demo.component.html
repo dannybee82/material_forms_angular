@@ -1,0 +1,7 @@
+<app-back-to-main></app-back-to-main>
+<app-material-form-fields 
+  [formData]="emailDemo" 
+  [getFormData]="undefined"
+  (formSubmit)="showData($event)" 
+  (formCallback)="receiveCallback($event)" 
+/>

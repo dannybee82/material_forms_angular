@@ -1,0 +1,8 @@
+:host ::ng-deep {
+    .mat-mdc-text-field-wrapper {
+        width: 350px!important;
+        position: relative;
+        float:left;
+        clear: both;
+    }
+}

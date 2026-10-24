@@ -65,6 +65,10 @@ body { margin: 0; font-family: "Roboto", "Helvetica Neue", sans-serif; }
     background-color: #1aff1a;
 }
 
+.email-class {
+    background-color: turquoise;
+}
+
 .favorite-fruit-class {
     background-color: #cc00cc;
 }
@@ -160,4 +164,53 @@ body { margin: 0; font-family: "Roboto", "Helvetica Neue", sans-serif; }
     padding: 5px;
     border-radius: 5px;
     margin-left: 10px;
+}
+
+// Some default styles, etc.
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.grid-2-cols {
+    display: grid;
+    grid-template-columns: repeat(2, 2fr);    
+    grid-template-rows: repeat(auto, 2fr);
+    grid-column-gap: 8px;
+    grid-row-gap: 8px;
+}
+
+.grid-3-cols {
+    display: grid;
+    grid-template-columns: repeat(2, 2fr);    
+    grid-template-rows: repeat(auto, 2fr);
+    grid-column-gap: 8px;
+    grid-row-gap: 8px;
+}
+
+.p-1 {
+    padding: 16px;
+}
+
+.ps-1 {
+    padding-left: 16px;
+}
+
+.demo-container-class {
+    display: grid;
+    grid-template-columns: repeat(2, 2fr);    
+    grid-template-rows: repeat(auto, 2fr);
+    grid-column-gap: 8px;
+    grid-row-gap: 8px;
+    width: 50%!important;
+}
+
+h3 {
+    font-weight: 800!important;
+    margin-left: 16px!important;
 }

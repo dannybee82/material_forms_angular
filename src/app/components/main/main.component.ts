@@ -34,6 +34,10 @@ export class MainComponent {
     this.router.navigate(['multiple-select-demo']);
   }
 
+  gotoEmailInpuDemo(): void {
+    this.router.navigate(['email']);
+  }
+
   gotoTextareaPage() : void {
     this.router.navigate(['textarea-demo']);
   }

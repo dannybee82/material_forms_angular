@@ -6,9 +6,9 @@ import { RouterOutlet } from '@angular/router';
 		RouterOutlet,
 	],
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  template: `<router-outlet />`
 })
 export class AppComponent {
-  title = 'material_forms';
+  protected readonly title = 'material_forms';
 }

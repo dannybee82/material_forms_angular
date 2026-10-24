@@ -1,12 +1,28 @@
 import { Component } from '@angular/core';
-
-import { FormDataModel } from 'src/app/models/FormDataModel';
-import { FORM_CONTROL_TYPES } from '../../form-controls/SetFormControls';
-import { FORM_VALIDATORS } from '../../form-controls/SetFormControls';
-import { AdditionalFormDataModel } from 'src/app/models/AdditionalFormDataModel';
 import { SharedFunctions } from 'src/app/shared_functions/shared-functions';
 import { BackToMainComponent } from 'src/app/components/back-to-main/back-to-main.component';
 import { MaterialFormFieldsComponent } from 'src/app/components/material-form-fields/material-form-fields.component';
+import { GenericFormInterface } from 'src/app/models/interfaces/generic-form.interface';
+import { FormTypeEnum } from 'src/app/models/enums/form-type.enum';
+import { Subject } from 'rxjs';
+
+// The various forms.
+import { firstname } from 'src/app/form_fields/input_text/first-name.formfield';
+import { lastname } from 'src/app/form_fields/input_text/last-name.formfield';
+import { favoriteFruit } from 'src/app/form_fields/input_auto_complete/favorite-fruit.formfield';
+import { favoriteCar } from 'src/app/form_fields/input_auto_complete/favorite-car.formfield';
+import { payForBook } from 'src/app/form_fields/input_number_float/pay-for-book.formfield';
+import { floatCallback } from 'src/app/form_fields/input_number_float/float-callback.formfield';
+import { randomPositiveNumber } from 'src/app/form_fields/input_number_int/random-positive-number.formfield';
+import { randomNegativeNumber } from 'src/app/form_fields/input_number_int/random-negative-number.formfield';
+import { birthdayCallback } from 'src/app/form_fields/input_date/birthday-callback.formfield';
+import { birthday } from 'src/app/form_fields/input_date/birthday.formfield';
+import { singleSelectDemo } from 'src/app/form_fields/input_single_select/single-select-demo.formfield';
+import { singleSelectCallbackDemo } from 'src/app/form_fields/input_single_select/single-select-callback-demo.formfield';
+import { selectGirlnameMultiSelect } from 'src/app/form_fields/input_multiple_select/select-girl-name.formfield';
+import { selectColorsMultiSelect } from 'src/app/form_fields/input_multiple_select/select-colors-multi.formfield';
+import { aboutTextfield } from 'src/app/form_fields/input_text_area/textarea-about.formfield';
+import { textAreaAboutCallback } from 'src/app/form_fields/input_text_area/textarea-about-callback.formfield';
 
 @Component({
 	imports: [
@@ -19,137 +35,33 @@ import { MaterialFormFieldsComponent } from 'src/app/components/material-form-fi
 })
 export class MaterialFormDemoComponent extends SharedFunctions {
 
-  public containerCssClass: string = "demo-container-class";
-
-  public override formControls: FormDataModel[] = [
-    new FormDataModel('firstname', 
-                      'Firstname', 
-                      'Firstname:', 
-                      FORM_CONTROL_TYPES.INPUT_TEXT, 
-                      'firstname-class clear-left predefined-flex formfield-width float-left margin-bottom-15 margin-left-10 rounded-borders', 
-                      null, 
-                      [ FORM_VALIDATORS.REQUIRED, FORM_VALIDATORS.PATTERN ], 
-                      [ null, /^[a-zA-Z\W ]+$/ ] ),
-    new FormDataModel('lastname', 
-                      'Lastname', 
-                      'Lastname:', 
-                      FORM_CONTROL_TYPES.INPUT_TEXT_CALLBACK, 
-                      'lastname-class clear-right predefined-flex formfield-width float-left margin-bottom-15 margin-left-10 rounded-borders', 
-                      null, 
-                      [ FORM_VALIDATORS.REQUIRED, FORM_VALIDATORS.PATTERN ], 
-                      [ null, /^[a-zA-Z\W ]+$/ ] ),
-    new FormDataModel('favorite_fruit', 
-                      'Favorite Fruit (autocomplete)', 
-                      'Favorite Fruit:', 
-                      FORM_CONTROL_TYPES.INPUT_TEXT_AUTOCOMPLETE, 
-                      'favorite-fruit-class clear-left predefined-flex formfield-width float-left margin-bottom-15 margin-left-10', 
-                      new AdditionalFormDataModel('favorite_fruit', ['ananas', 'apple', 'banana', 'black berry', 'peach', 'pear', 'strawberry']), 
-                      [ FORM_VALIDATORS.REQUIRED ], 
-                      [ null ] ),                  
-    new FormDataModel('favorite_car', 
-                      'Favorite Car (autocomplete)', 
-                      'Favorite Car:', 
-                      FORM_CONTROL_TYPES.INPUT_TEXT_AUTOCOMPLETE_CALLBACK, 
-                      'favorite-car-class clear-right predefined-flex formfield-width float-left margin-bottom-15 margin-left-10 rounded-borders',
-                      new AdditionalFormDataModel('favorite_car', ['Alfa Romeo', 'Batmobile', 'Ferrari', 'Lada', 'Lamborghini', 'Mercedes', 'Porsche' ]),                        
-                      [ FORM_VALIDATORS.REQUIRED ], 
-                      [ null ] ),
-    new FormDataModel('pay_for_book', 
-                      'Pay for second hand book:', 
-                      'Minumum (10.00) and Maximum (100.00) to pay for second hand book:', 
-                      FORM_CONTROL_TYPES.INPUT_NUMBER_FLOAT, 
-                      'pay-for-second-hand-book-class predefined-flex formfield-width float-left clear-left margin-bottom-15 margin-left-10 rounded-borders', 
-                      new AdditionalFormDataModel('pay_for_book', null, {"step": ".01", "value": 10.05}),
-                      [ FORM_VALIDATORS.REQUIRED, FORM_VALIDATORS.MINIMUM_VALUE_FLOAT, FORM_VALIDATORS.MAXIMUM_VALUE_FLOAT ], 
-                      [ null, 10.00, 100.00 ] ),
-    new FormDataModel('float_callback_test', 
-                      'Enter value between -25.00 and 25.00:', 
-                      'Enter value between -25.00 and 25.00', 
-                      FORM_CONTROL_TYPES.INPUT_NUMBER_FLOAT_CALLBACK, 
-                      'enter-value-between-class predefined-flex formfield-width float-left margin-bottom-15 margin-left-10 rounded-borders', 
-                      new AdditionalFormDataModel('float_callback_test', null, {"step": ".01", "value": 17.35}),
-                      [ FORM_VALIDATORS.REQUIRED, FORM_VALIDATORS.MINIMUM_VALUE_FLOAT, FORM_VALIDATORS.MAXIMUM_VALUE_FLOAT ], 
-                      [ null, -25.00, 25.00 ] ),
-    new FormDataModel('random_positive_number', 
-                      'Random Posivite Number:', 
-                      'Random Positive Number (10-75):', 
-                      FORM_CONTROL_TYPES.INPUT_NUMBER_INT, 
-                      'random-positive-number-class predefined-flex formfield-width float-left margin-bottom-15 margin-left-10 rounded-borders clear-left', 
-                      new AdditionalFormDataModel('random_positive_number', null, {"step": "1", "min": 10, "max": 75, "value": 25}),
-                      [ FORM_VALIDATORS.REQUIRED, FORM_VALIDATORS.MINIMUM_VALUE_INT, FORM_VALIDATORS.MAXIMUM_VALUE_INT ], 
-                      [ null, 10, 75 ] ),
-   new FormDataModel('random_negative_number', 
-                      'Random Negative Number:', 
-                      'Random Negative Number (from -10 to -75):', 
-                      FORM_CONTROL_TYPES.INPUT_NUMBER_INT_CALLBACK, 
-                      'random-negative-number-class predefined-flex formfield-width float-left clear-right margin-bottom-15 margin-left-10 rounded-borders', 
-                      new AdditionalFormDataModel('random_negative_number', null, {"step": "1", "min": -75, "max": -10, "value": -25}),
-                      [ FORM_VALIDATORS.REQUIRED, FORM_VALIDATORS.MINIMUM_VALUE_INT, FORM_VALIDATORS.MAXIMUM_VALUE_INT ], 
-                      [ null, -75, -10 ] ),
-    new FormDataModel('birth_date',
-                      'Birth Date:',
-                      'Birth Date (DD/MM/YYY):',
-                      FORM_CONTROL_TYPES.INPUT_DATE,
-                      'birth-date-class predefined-flex formfield-width float-left margin-left-10 clear-left rounded-borders',
-                      null,
-                      [ FORM_VALIDATORS.REQUIRED, FORM_VALIDATORS.MINIMUM_TIME, FORM_VALIDATORS.MAXIMUM_TIME ],
-                      [ null, {value: 18, type: 'years'}, {value: 65, type: 'years'} ] ),
-    new FormDataModel('birth_date_callback',
-                      'Birth Date (Callback):',
-                      'Birth Date (Callback) (DD/MM/YYY):',
-                      FORM_CONTROL_TYPES.INPUT_DATE_CALLBACK,
-                      'birth-date-callback-class predefined-flex formfield-width float-left clear-right margin-left-10 rounded-borders',
-                      new AdditionalFormDataModel('birth_date_callback', null, {"conditionalRegex": new RegExp(/\d{1,2}\/\d{1,2}\/\d{4}|\d{1,2}-\d{1,2}-\d{4}/g) }),
-                      [ FORM_VALIDATORS.REQUIRED ],
-                      [ null ] ),
-    new FormDataModel('select_girl_name',
-                      'Select girl name',
-                      'Select girl name:',
-                      FORM_CONTROL_TYPES.INPUT_SELECT,
-                      'select-girl-name-class predefined-flex formfield-width float-left margin-left-10 clear-left rounded-borders',
-                      new AdditionalFormDataModel('select_girl_name', ['Jane', 'Matilda', 'Saskia', 'Victoria'], {"value": "Saskia"}),
-                      [ FORM_VALIDATORS.REQUIRED ],
-                      [ null ] ),
-    new FormDataModel('select_color',
-                      'Select Color',
-                      'Select Color:',
-                      FORM_CONTROL_TYPES.INPUT_SELECT_CALLBACK,
-                      'select-color-class predefined-flex formfield-width float-left clear-right margin-left-10 rounded-borders',
-                      new AdditionalFormDataModel('select_color', ['Black', 'Blue', 'Green', 'Red', 'Yellow', 'White'], {"value": "White"}),
-                      [ FORM_VALIDATORS.REQUIRED ],
-                      [ null ] ),
-    new FormDataModel('select_girl_name_multi',
-                      'Select girl name (Multi)',
-                      'Select girl name (Multi):',
-                      FORM_CONTROL_TYPES.INPUT_SELECT_MULTI,
-                      'select-girl-name-multi-class predefined-flex formfield-width float-left margin-left-10 clear-left rounded-borders',
-                      new AdditionalFormDataModel('select_girl_name_multi', ['Jane', 'Matilda', 'Saskia'], {"value": ["Saskia", "Matilda"]}),
-                      [ FORM_VALIDATORS.REQUIRED ],
-                      [ null ] ),
-    new FormDataModel('select_color_multi',
-                      'Select Color (Multi)',
-                      'Select Color (Multi):',
-                      FORM_CONTROL_TYPES.INPUT_SELECT_MULTI_CALLBACK,
-                      'select-color-multi-class predefined-flex formfield-width float-left clear-right margin-left-10 rounded-borders',
-                      new AdditionalFormDataModel('select_color_multi', ['Black', 'Blue', 'Green', 'Red', 'Yellow', 'White'], {"value": ["Blue", "Red","White"]}),
-                      [ FORM_VALIDATORS.REQUIRED ],
-                      [ null ] ),   
-    new FormDataModel('textarea_about_normal',
-                      'About (Max: 125 characters)',
-                      'About (Max: 125 characters):',
-                      FORM_CONTROL_TYPES.INPUT_TEXTAREA,
-                      'textarea-about predefined-flex formfield-width float-left margin-left-10 clear-left rounded-borders',
-                      new AdditionalFormDataModel('textarea_about_normal', ['Some Text'], {rows: 5, columns: 150}),
-                      [ FORM_VALIDATORS.REQUIRED, FORM_VALIDATORS.MIN_LENGTH, FORM_VALIDATORS.MAX_LENGTH ],
-                      [ null, 1, 125 ] ), 
-    new FormDataModel('textarea_about_callback',
-                      'About Callback (Max: 250 characters)',
-                      'About Callback (Max: 250 characters):',
-                      FORM_CONTROL_TYPES.INPUT_TEXTAREA_CALLBACK,
-                      'textarea-about-callback predefined-flex formfield-width float-left clear-right margin-left-10 rounded-borders',
-                      new AdditionalFormDataModel('textarea_about_callback', null, {rows: 8}),
-                      [ FORM_VALIDATORS.REQUIRED, FORM_VALIDATORS.MIN_LENGTH, FORM_VALIDATORS.MAX_LENGTH ],
-                      [ null, 1, 250 ] ),
-  ];
+  // Demo of all input fields.
+  protected allInputsFieldsCallback: Subject<boolean> = new Subject<boolean>();
+  protected readonly allInputsDemo: GenericFormInterface = {
+      id: 1,
+      formType: FormTypeEnum.REGULAR,
+      title: 'Demo Form with All Fields',
+      cssClasses: 'demo-container-class',
+      showSubmitButton: true,
+      showResetButton: true,
+      formFields: [
+        firstname,
+        lastname,
+        favoriteFruit,
+        favoriteCar,
+        payForBook,
+        floatCallback,
+        randomPositiveNumber,
+        randomNegativeNumber,
+        birthday,
+        birthdayCallback,
+        singleSelectDemo,
+        singleSelectCallbackDemo,
+        selectGirlnameMultiSelect,
+        selectColorsMultiSelect,
+        aboutTextfield,
+        textAreaAboutCallback
+      ]
+  };
 
 }
